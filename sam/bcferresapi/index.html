@@ -1,0 +1,93 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC Ferries API</title>
+    <script src="https://kit.fontawesome.com/ca3f60aa1d.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="public/css/style.css">
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <script src="public/js/main.js"></script>
+
+</head>
+<body>
+    <div class="containter">
+            <div class="select-form">
+                <select name="" id="departure">
+                    <option selected value="">Select Departure Terminal</option>
+                    <option value="TSA">Tsawwassen</option>
+                    <option value="SWB">Swartz Bay</option>
+                    <option value="HSB">Horseshoe Bay</option>
+                    <option value="DUK">Duke Point (Nanaimo)</option>
+                    <option value="NAN">Departure Bay (Nanaimo)</option>
+                    <option value="LNG">Langford</option>
+                </select>
+                <i class="fa-solid fa-sailboat"></i>
+                <select name="" id="destination">
+                    <option selected value="">Select Destination Terminal</option>
+                    <option value="TSA">Tsawwassen</option>
+                    <option value="SWB">Swartz Bay</option>
+                    <option value="HSB">Horseshoe Bay</option>
+                    <option value="DUK">Duke Point (Nanaimo)</option>
+                    <option value="NAN">Departure Bay (Nanaimo)</option>
+                    <option value="LNG">Langford</option>
+                    <option value="SGI">Southern Gulf Islands</option>
+                    <option value="FUL">Fulford Harbour (Salt Spring Island)</option>
+                    <option value="BOW">Bowen Island</option>
+                </select>
+            </div>
+
+            <div class="data">
+
+            </div>
+    </div>
+    
+</body>
+<script>
+
+  $('#destination').on('change', function() {
+    const destination = this.value;
+    const departure = $('#departure :selected').val();
+    $('.data').empty();
+    $.getJSON(`https://www.bcferriesapi.ca/api/${departure}/${destination}`, (data) => {
+        const sailings = data.sailings;
+        const duration = data.sailingDuration;
+        $.each(sailings, (key, val) =>  {
+            console.log(val);
+            const html = `<div class="data__boat">
+                <div class="data__title accordion"><h2>${val.vesselName}</h2></div>
+                <div class="panel">
+                <div class="headers">
+                    <span>Time</span>
+                    <span>Fill</span>
+                    <span>Car Fill</span>
+                    <span>Oversize Fill</span>
+                    </div>
+                    <div class="info">
+                  <span>${val.time}</span>
+                  <p>${val.fill}</p>
+                  <p>${val.carFill}</p>
+               <p>${val.oversizeFill}</p>
+               </span>
+                    
+                    </div>
+       
+            </div>`;
+            $('.data').append(html);
+        });
+}).fail(() => {
+    console.log('error');
+    const html = '<h1>No Routes Found</h1>';
+    $('.data').append(html);
+});
+  });
+
+
+</script>
+</html>
